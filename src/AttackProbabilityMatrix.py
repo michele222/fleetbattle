@@ -13,6 +13,10 @@ class AttackProbabilityMatrix:
         return random.choice(maxProbabilityPositions)
     
     def update(self, position, result): #result = 0 MISS, -1 HIT
+        if position < 0 or position >= self.sizeX * self.sizeY:
+            raise ValueError('Invalid position')
+        if result not in (0, -1):
+            raise ValueError('Invalid result')
         self.matrix[position] = result
         if result < 0:
             positionsToUpdate = []
