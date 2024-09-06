@@ -143,7 +143,7 @@ class FleetBattle:
         playerHits = 0
         enemyHits = 0
         enemyAttackProbabilities = AttackProbabilityMatrix(N, N)
-        while self.phase <= 2:
+        while self.phase > 0:
     
             self.graphics.clearScreen()
             self.graphics.drawPlayerGrid()
@@ -151,6 +151,9 @@ class FleetBattle:
     
             for ship in self.Ships: #draw ships
                 self.graphics.drawShip(ship.body)
+            if self.phase == 4:
+                for ship in self.ShipsEnemy: #draw also enemy ships if game is lost
+                    self.graphics.drawShip(ship.body)
 
             for attack in playerAttacks:
                 self.graphics.drawHit(True, attack, attack in self.enemyPositions)
@@ -161,44 +164,47 @@ class FleetBattle:
                 if event.type == pygame.QUIT:
                     self.phase = 0
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    mousePos = pygame.mouse.get_pos()
-                    if self.graphics.playerAttacked(mousePos):
-                        attackPos = self.graphics.getAttackPosition(mousePos)
-                        if attackPos not in playerAttacks:
-                            playerAttacks.append(attackPos)
-                            if attackPos in self.enemyPositions:
-                                playerHits += 1
-                                if playerHits == len(self.enemyPositions): #WON
-                                    self.phase = 3
-                            if self.phase <= 2:
-                                while True:    
-                                    attackPos = enemyAttackProbabilities.getNextAttack()
-                                    if attackPos not in enemyAttacks: 
-                                        enemyAttacks.append(attackPos)
-                                        break
-                                if attackPos in self.playerPositions: #hit
-                                    enemyHits += 1
-                                    enemyAttackProbabilities.update(attackPos, -1)
-                                    if enemyHits == len(self.playerPositions): #LOST
-                                        self.phase = 4
-                                else: #miss
-                                    enemyAttackProbabilities.update(attackPos, 0)
-    
+                    if self.phase > 2:
+                        self.phase = 0
+                    else:
+                        mousePos = pygame.mouse.get_pos()
+                        if self.graphics.playerAttacked(mousePos):
+                            attackPos = self.graphics.getAttackPosition(mousePos)
+                            if attackPos not in playerAttacks:
+                                playerAttacks.append(attackPos)
+                                if attackPos in self.enemyPositions:
+                                    playerHits += 1
+                                    if playerHits == len(self.enemyPositions): #WON
+                                        self.phase = 3
+                                if self.phase <= 2:
+                                    while True:    
+                                        attackPos = enemyAttackProbabilities.getNextAttack()
+                                        if attackPos not in enemyAttacks: 
+                                            enemyAttacks.append(attackPos)
+                                            break
+                                    if attackPos in self.playerPositions: #hit
+                                        enemyHits += 1
+                                        enemyAttackProbabilities.update(attackPos, -1)
+                                        if enemyHits == len(self.playerPositions): #LOST
+                                            self.phase = 4
+                                    else: #miss
+                                        enemyAttackProbabilities.update(attackPos, 0)
+            
+            if self.phase == 3:
+                self.graphics.textWindow('You win!')
+            elif self.phase == 4:
+                self.graphics.textWindow('You lose!')
+
             self.graphics.updateScreen()
     
-            self.graphics.clock.tick(60)
-    
-    def resultPhase(self):
-        if self.phase == 3:
-            print('Player won')
-        elif self.phase == 4:
-            print('Player lost')
+            #self.graphics.clock.tick(60)
         
 if __name__ == '__main__':
     
     game = FleetBattle()
-    game.placeShipsPlayer()
-    #game.placeShipsRandomly(True)
+    #game.placeShipsPlayer()
+    game.placeShipsRandomly(True)
     game.placeShipsRandomly(False)
     game.playMainGamePhase()
-    game.resultPhase()
+    
+    quit()

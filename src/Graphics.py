@@ -6,6 +6,7 @@ class Graphics:
     def __init__(self):
         pygame.init() 
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption('FleetBattle')
         self.clock = pygame.time.Clock()
         self.placementGrid = pygame.Rect((0, 0, 2 * MARGIN + N * SQUARE, 2 * MARGIN + N * SQUARE))
         self.playerGrid = pygame.Rect((MARGIN, MARGIN, N * SQUARE, N * SQUARE))
@@ -65,3 +66,10 @@ class Graphics:
 
     def getGridPositionFromBody(self, body):
         return (body.x - MARGIN) // SQUARE + (body.y - MARGIN) * N // SQUARE
+    
+    def textWindow(self, message):
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render(message, True, (255, 255, 255), (10, 10, 10))
+        textRect = text.get_rect()
+        textRect.center = (WIDTH // 2, HEIGHT // 2)
+        self.screen.blit(text, textRect)
