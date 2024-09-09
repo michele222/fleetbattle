@@ -2,7 +2,7 @@ import pygame
 import random
 from src.Graphics import Graphics
 
-from src.params import *
+import Parameters
 from src.Ship import Ship
 from src.AttackProbabilityMatrix import AttackProbabilityMatrix
 
@@ -18,34 +18,9 @@ class FleetBattle:
         self.enemyPositions = []
         self.phase = 1
         
-        self.Ships.append(Ship(1, (MARGIN * 2 + SQUARE * N, MARGIN)))
-        self.Ships.append(Ship(1, (MARGIN * 3 + SQUARE * (N + 1), MARGIN)))
-        self.Ships.append(Ship(1, (MARGIN * 4 + SQUARE * (N + 2), MARGIN)))
-        self.Ships.append(Ship(1, (MARGIN * 5 + SQUARE * (N + 3), MARGIN)))
-        self.Ships.append(Ship(1, (MARGIN * 6 + SQUARE * (N + 4), MARGIN)))
-        self.Ships.append(Ship(2, (MARGIN * 2 + SQUARE * N, MARGIN * 2 + SQUARE)))
-        self.Ships.append(Ship(2, (MARGIN * 3 + SQUARE * (N + 2), MARGIN * 2 + SQUARE)))
-        self.Ships.append(Ship(2, (MARGIN * 4 + SQUARE * (N + 4), MARGIN * 2 + SQUARE)))
-        self.Ships.append(Ship(3, (MARGIN * 2 + SQUARE * N, MARGIN * 3 + SQUARE * 2)))
-        self.Ships.append(Ship(3, (MARGIN * 3 + SQUARE * (N + 3), MARGIN * 3 + SQUARE * 2)))
-        self.Ships.append(Ship(4, (MARGIN * 2 + SQUARE * N, MARGIN * 4 + SQUARE * 3)))
-        self.Ships.append(Ship(4, (MARGIN * 3 + SQUARE * (N + 4), MARGIN * 4 + SQUARE * 3)))
-        self.Ships.append(Ship(5, (MARGIN * 2 + SQUARE * N, MARGIN * 5 + SQUARE * 4)))
-        
-        self.ShipsEnemy.append(Ship(1))
-        self.ShipsEnemy.append(Ship(1))
-        self.ShipsEnemy.append(Ship(1))
-        self.ShipsEnemy.append(Ship(1))
-        self.ShipsEnemy.append(Ship(1))
-        self.ShipsEnemy.append(Ship(2))
-        self.ShipsEnemy.append(Ship(2))
-        self.ShipsEnemy.append(Ship(2))
-        self.ShipsEnemy.append(Ship(2))
-        self.ShipsEnemy.append(Ship(3))
-        self.ShipsEnemy.append(Ship(3))
-        self.ShipsEnemy.append(Ship(4))
-        self.ShipsEnemy.append(Ship(4))
-        self.ShipsEnemy.append(Ship(5))
+        for i in Parameters.SHIPS:
+            self.Ships.append(Ship(i, self.graphics.getSpaceForShipSize(i)))
+            self.ShipsEnemy.append(Ship(i))
 
     def placeShipsPlayer(self):
         
@@ -121,7 +96,7 @@ class FleetBattle:
             while placedShips == i:    
                 if random.randint(0, 1):
                     Ships[i].rotate()
-                if Ships[i].place(random.randint(0, N * N - 1)):
+                if Ships[i].place(random.randint(0, Parameters.N * Parameters.N - 1)):
                     placedShips += 1
                     for y in range(len(Ships)):
                         if y != i and any(j in Ships[i].Positions for j in Ships[y].Positions):
@@ -129,9 +104,9 @@ class FleetBattle:
                             placedShips -= 1
                             break    
             if player is True:
-                Ships[i].alignTo((MARGIN, MARGIN))
+                Ships[i].anchorTo(self.graphics.getPlayerGrid())
             else:        
-                Ships[i].alignTo((MARGIN * 2 + N * SQUARE, MARGIN))
+                Ships[i].anchorTo(self.graphics.getEnemyGrid())
             positions.extend(Ships[i].Positions)
 
     def playMainGamePhase(self):            
@@ -142,7 +117,7 @@ class FleetBattle:
         enemyAttacks = []
         playerHits = 0
         enemyHits = 0
-        enemyAttackProbabilities = AttackProbabilityMatrix(N, N)
+        enemyAttackProbabilities = AttackProbabilityMatrix(Parameters.N, Parameters.N)
         while self.phase > 0:
     
             self.graphics.clearScreen()
@@ -196,14 +171,12 @@ class FleetBattle:
                 self.graphics.textWindow('You lose!')
 
             self.graphics.updateScreen()
-    
-            #self.graphics.clock.tick(60)
         
 if __name__ == '__main__':
     
     game = FleetBattle()
-    #game.placeShipsPlayer()
-    game.placeShipsRandomly(True)
+    game.placeShipsPlayer()
+    #game.placeShipsRandomly(True)
     game.placeShipsRandomly(False)
     game.playMainGamePhase()
     

@@ -1,0 +1,6 @@
+WIDTH = 1280
+HEIGHT = 1024
+MARGIN = 20
+SQUARE = 50
+N = 10
+SHIPS = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5]
