@@ -35,7 +35,7 @@ class FleetBattle:
             self.graphics.drawPlayerGrid()
             
             for ship in self.Ships: #draw ships
-                self.graphics.drawShip(ship.body)
+                self.graphics.drawShip(ship)
 
             mouseKey = pygame.mouse.get_pressed()
             if mouseKey[0]: #left click mouse
@@ -125,10 +125,10 @@ class FleetBattle:
             self.graphics.drawEnemyGrid()
     
             for ship in self.Ships: #draw ships
-                self.graphics.drawShip(ship.body)
-            if self.phase == 4:
-                for ship in self.ShipsEnemy: #draw also enemy ships if game is lost
-                    self.graphics.drawShip(ship.body)
+                self.graphics.drawShip(ship)
+            if self.phase in (3, 4):
+                for ship in self.ShipsEnemy: #draw also enemy ships if game is finished
+                    self.graphics.drawShip(ship)
 
             for attack in playerAttacks:
                 self.graphics.drawHit(True, attack, attack in self.enemyPositions)

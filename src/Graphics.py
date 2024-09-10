@@ -1,5 +1,6 @@
 import pygame
 import Parameters
+import Ship
 
 class Graphics:
     
@@ -12,11 +13,24 @@ class Graphics:
         self.playerGrid = pygame.Rect((Parameters.MARGIN, Parameters.MARGIN, Parameters.N * Parameters.SQUARE, Parameters.N * Parameters.SQUARE))
         self.attackGrid = pygame.Rect((2 * Parameters.MARGIN + Parameters.N * Parameters.SQUARE, Parameters.MARGIN, Parameters.N * Parameters.SQUARE, Parameters.N * Parameters.SQUARE))
         self.placementPos = 0
+        self.bgTexture = pygame.image.load(r'assets\bg.png').convert_alpha()
+        self.bgTexture = pygame.transform.smoothscale(self.bgTexture, (Parameters.N * Parameters.SQUARE, Parameters.N * Parameters.SQUARE))
+        self.ShipTextures = {}
+        for i in range (1, 6):
+            self.ShipTextures[i] = pygame.image.load(f'assets\ship{i}.png').convert_alpha()
+            self.ShipTextures[i] = pygame.transform.smoothscale(self.ShipTextures[i], (i * Parameters.SQUARE, Parameters.SQUARE))
+        self.HitTexture = {
+            True : pygame.image.load('assets\explosion.png').convert_alpha(),
+            False : pygame.image.load('assets\explosion_sea.png').convert_alpha()
+        }
+        for i in self.HitTexture:
+            self.HitTexture[i] = pygame.transform.smoothscale(self.HitTexture[i], (Parameters.SQUARE, Parameters.SQUARE))
     
     def __del__(self):
         pygame.quit()
 
     def drawGrid(self, offset = (0, 0)): #draw placement grid
+        self.screen.blit(self.bgTexture, offset)
         for i in range(Parameters.N+1):
             pygame.draw.line(self.screen, (255, 255, 255), (offset[0], offset[1] + i * Parameters.SQUARE), (offset[0] + Parameters.N * Parameters.SQUARE, offset[1] + i * Parameters.SQUARE))
             pygame.draw.line(self.screen, (255, 255, 255), (offset[0] + i * Parameters.SQUARE, offset[1]), (offset[0] + i * Parameters.SQUARE, offset[1] + Parameters.N * Parameters.SQUARE))
@@ -34,7 +48,8 @@ class Graphics:
         color = (0, 0, 255)
         if hit:
             color = (255, 0, 0)
-        pygame.draw.rect(self.screen, color, (offset[0] + Parameters.SQUARE * (pos % Parameters.N), offset[1] + Parameters.SQUARE * (pos // Parameters.N), Parameters.SQUARE, Parameters.SQUARE))
+        #pygame.draw.rect(self.screen, color, (offset[0] + Parameters.SQUARE * (pos % Parameters.N), offset[1] + Parameters.SQUARE * (pos // Parameters.N), Parameters.SQUARE, Parameters.SQUARE))
+        self.screen.blit(self.HitTexture[hit], (offset[0] + Parameters.SQUARE * (pos % Parameters.N), offset[1] + Parameters.SQUARE * (pos // Parameters.N)))
     
     def clearScreen(self):
         self.screen.fill((0, 0, 0))
@@ -42,8 +57,12 @@ class Graphics:
     def updateScreen(self):
         pygame.display.flip()
         
-    def drawShip(self, body):
-        pygame.draw.rect(self.screen, (0, 255, 0), body)
+    def drawShip(self, ship):
+        #pygame.draw.rect(self.screen, (0, 255, 0), ship.body)
+        if ship.horizontal:
+            self.screen.blit(self.ShipTextures[ship.length], ship.body.topleft)
+        else:
+            self.screen.blit(pygame.transform.rotate(self.ShipTextures[ship.length], -90), ship.body.topleft)
         
     def playerAttacked(self, mousePos):
         if self.attackGrid.collidepoint(mousePos):
