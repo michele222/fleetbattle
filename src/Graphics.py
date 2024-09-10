@@ -100,10 +100,9 @@ class Graphics:
         self.placementPos += (size + 1)         
         return ret
             
-    
     def textWindow(self, message):
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render(message, True, (255, 255, 255), (10, 10, 10))
+        text = font.render(message, True, (255, 255, 255))
         textRect = text.get_rect()
-        textRect.center = (Parameters.WIDTH // 2, Parameters.HEIGHT // 2)
+        textRect.midtop = (Parameters.WIDTH // 2, self.playerGrid.bottomright[0] + Parameters.MARGIN // 2)
         self.screen.blit(text, textRect)
