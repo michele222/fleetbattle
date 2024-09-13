@@ -1,5 +1,5 @@
 import pygame
-import Parameters
+import src.Parameters as Parameters
 
 #class handling all graphic elements of the game
 class Graphics:
@@ -34,14 +34,14 @@ class Graphics:
         #ship images are initialized based on ship length
         self.ShipTextures = {}
         for i in range (1, 6):
-            self.ShipTextures[i] = pygame.image.load(f'assets\ship{i}.png').convert_alpha()
+            self.ShipTextures[i] = pygame.image.load(f'assets\\ship{i}.png').convert_alpha()
             self.ShipTextures[i] = pygame.transform.smoothscale(self.ShipTextures[i],
                                                                 (i * Parameters.SQUARE,
                                                                  Parameters.SQUARE))
         #explosion images
         self.HitTexture = {
-            True : pygame.image.load('assets\explosion.png').convert_alpha(),       #True: explosion on ship (hit)
-            False : pygame.image.load('assets\explosion_sea.png').convert_alpha()   #False: explosion at sea (miss)
+            True : pygame.image.load('assets\\explosion.png').convert_alpha(),       #True: explosion on ship (hit)
+            False : pygame.image.load('assets\\explosion_sea.png').convert_alpha()   #False: explosion at sea (miss)
         }
         for i in self.HitTexture:
             self.HitTexture[i] = pygame.transform.smoothscale(self.HitTexture[i],

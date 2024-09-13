@@ -1,5 +1,5 @@
 import pygame
-import Parameters
+import src.Parameters as Parameters
 
 #class handling a ship in fleetbattle
 class Ship:

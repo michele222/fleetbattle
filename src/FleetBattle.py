@@ -1,6 +1,6 @@
 import pygame
 import random
-import Parameters
+import src.Parameters as Parameters
 from src.Graphics import Graphics
 from src.Ship import Ship
 from src.AttackProbabilityMatrix import AttackProbabilityMatrix
@@ -8,17 +8,23 @@ from src.AttackProbabilityMatrix import AttackProbabilityMatrix
 #main class running the game
 class FleetBattle:
     
-    def __init__(self):
-        self.graphics = Graphics()
+    #game initialization
+    #@graphics: True initializes graphics as well. False is used for testing
+    def __init__(self, graphics = True):
         self.Ships = []             #player ships
         self.ShipsEnemy = []        #enemy ships
         self.playerPositions = []   #positions occupied by player ships
         self.enemyPositions = []    #positions occupied by enemy ships
         self.phase = 1              #game phase
+        if graphics:
+            self.graphics = Graphics()
         for i in Parameters.SHIPS:
-            self.Ships.append(Ship(i, self.graphics.getSpaceForShipSize(i)))
             self.ShipsEnemy.append(Ship(i))
-    
+            if graphics:
+                self.Ships.append(Ship(i, self.graphics.getSpaceForShipSize(i)))
+            else:
+                self.Ships.append(Ship(i))    
+
     #manual placement of ships by player
     def placeShipsPlayer(self):
         if self.phase == 0:
@@ -29,6 +35,7 @@ class FleetBattle:
         while self.phase == 1:
             self.graphics.clearScreen()
             self.graphics.drawPlayerGrid()
+            self.graphics.textWindow('Place the ships in the grid. Right click to rotate.')
             for ship in self.Ships:
                 self.graphics.drawShip(ship)
 
