@@ -1,8 +1,6 @@
 import pytest
 from src.Ship import Ship
-from src.AttackProbabilityMatrix import AttackProbabilityMatrix
-import src.FleetBattle
-from src.params import *
+import src.Parameters as Parameters
 
 @pytest.fixture
 def testShip():
@@ -27,29 +25,18 @@ def testReset(testShip):
     assert testShip.Positions[0] == -1
     
 def testPlacementOutOfBoundsRight(testShip):
-    assert testShip.place(N*N) is False
+    assert testShip.place(Parameters.N * Parameters.N) is False
     
 def testPlacementOutOfBoundsBottom(testShip):
     testShip.rotate()
-    assert testShip.place(N*N) is False
+    assert testShip.place(Parameters.N * Parameters.N) is False
     
 def testPlacementBottomRightCornerOut(testShip):
     testShip.rotate()
-    assert testShip.place(N*N - 1) is False
+    assert testShip.place(Parameters.N * Parameters.N - 1) is False
     
 def testPlacementBottomRightCornerIn(testShip):
-    assert testShip.place(N*N - 2) is True
-    
-def testAttackProbabilityMatrix():
-    testMatrix = AttackProbabilityMatrix(5, 5)
-    testMatrix.update(0, 0)
-    assert testMatrix.getNextAttack() != 0
-    testMatrix.update(1, -1)
-    testMatrix.update(2, 0)
-    assert testMatrix.getNextAttack() == 6
-    with pytest.raises(ValueError):
-        testMatrix.update(-1, 0)
-    with pytest.raises(ValueError):
-        testMatrix.update(25, 0)
-    with pytest.raises(ValueError):
-        testMatrix.update(1, 2)
+    assert testShip.place(Parameters.N * Parameters.N - 2) is True
+    testShip.anchorTo((1, 1))
+    assert testShip.body.topleft == (Parameters.SQUARE * (Parameters.N - 2) + 1,
+                                     Parameters.SQUARE * (Parameters.N - 1) + 1)
