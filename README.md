@@ -1,6 +1,6 @@
 # Fleet Battle
 
-Fleet Battle is a variation of the game Battleship implemented in Python.
+Fleet Battle is a variation of the game [Battleship](https://en.wikipedia.org/wiki/Battleship_(game)) implemented in Python.
 
 ![Fleet Battle](fleetbattle.jpg?raw=true)
 
