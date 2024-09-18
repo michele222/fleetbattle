@@ -1,5 +1,5 @@
 import pygame
-from src.params import *
+from src import Parameters
 
 class Ship:
     
