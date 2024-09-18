@@ -1,5 +1,6 @@
 import pygame
 from pathlib import Path
+
 from src import Parameters
 
 #class handling all graphic elements of the game
