@@ -8,11 +8,7 @@ Fleet Battle is a variation of the game [Battleship](https://en.wikipedia.org/wi
 
 Clone repository and run file main.py.
 
-You can change game parameters in Parameters.py.
-
-## License
-
-[MIT](https://chosealicense.com/licenses/mit/)
+You can change game parameters in parameters.py.
 
 ## Images
 
