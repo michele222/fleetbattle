@@ -13,7 +13,7 @@ class Ship:
         self.horizontal = horizontal        #orientation
         self.horizontal_init = horizontal    #initial orientation
         self.position_init = pos             #initial position
-        self.positions = [-1] * length      #positions occupied in grid (-1 is not placed)
+        self.positions = [None] * length      #positions occupied in grid
         self.body = pygame.Rect((pos[0],    #graphical body of the ship
                                  pos[1],
                                  parameters.SQUARE + horizontal * parameters.SQUARE * (length - 1),
@@ -22,7 +22,7 @@ class Ship:
     #resets ship values to default
     def reset(self):
         self.horizontal = self.horizontal_init
-        self.positions = [-1] * self.length
+        self.positions = [None] * self.length
         self.body = pygame.Rect((self.position_init[0],
                                  self.position_init[1],
                                  parameters.SQUARE + self.horizontal * parameters.SQUARE * (self.length - 1),
@@ -37,22 +37,19 @@ class Ship:
     #@pos: grid position of first square of the ship 
     #return: True if placement is valid, False otherwise  
     def place(self, pos):
-        line = pos // parameters.N
         for i in range(self.length):
-            if pos >= parameters.N * parameters.N:
-                return False #placement is outside of grid (bottom)
-            if self.horizontal and line != pos // parameters.N:
-                return False #placement is outside of grid (right)
+            if pos[0] >= parameters.N[0] or pos[1] >= parameters.N[1]:
+                return False #placement is outside of grid
             self.positions[i] = pos
             if self.horizontal:
-                pos += 1
+                pos = (pos[0] + 1, pos[1])
             else:
-                pos += parameters.N
+                pos = (pos[0], pos[1] + 1)
         return True
     
     #moves the ship body in a graphical grid based on its position
     #@pos: graphical location of the grid topleft (x, y)
     def anchor_to(self, pos):
-        if self.positions[0] >= 0: #ship positions must be filled
-            self.body.x = pos[0] + parameters.SQUARE * (self.positions[0] % parameters.N)
-            self.body.y = pos[1] + parameters.SQUARE * (self.positions[0] // parameters.N)
+        if len(self.positions[0]) > 0: #ship positions must be filled
+            self.body.x = pos[0] + parameters.SQUARE * self.positions[0][0]
+            self.body.y = pos[1] + parameters.SQUARE * self.positions[0][1]

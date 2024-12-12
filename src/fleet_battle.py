@@ -57,7 +57,7 @@ class FleetBattle:
                 if self.graphics.is_ship_in_placement_area(self.ships[hold_ship].body):
                     self.ships[hold_ship].body = self.graphics.align_to_player_grid(self.ships[hold_ship].body)
                     #this is a ship not placed before
-                    if self.ships[hold_ship].positions[0] < 0:
+                    if not self.ships[hold_ship].positions[0]:
                         placed_ships += 1
                     grid_position = self.graphics.get_grid_position_from_body(self.ships[hold_ship].body)
                     self.ships[hold_ship].place(grid_position)
@@ -70,7 +70,7 @@ class FleetBattle:
                            break           
                 else: #ship released outside of placement grid
                     #this is a ship that was previously placed
-                    if self.ships[hold_ship].positions[0] >= 0:
+                    if self.ships[hold_ship].positions[0]:
                         placed_ships -= 1
                     self.ships[hold_ship].reset()
                 hold_ship = -1
@@ -111,11 +111,12 @@ class FleetBattle:
                 if random.randint(0, 1):
                     ships[i].rotate()
                 #randomly selects ship place in grid
-                if ships[i].place(random.randint(0, parameters.N * parameters.N - 1)):
+                if ships[i].place((random.randrange(0, parameters.N[0]),
+                                   random.randrange(0, parameters.N[1]))):
                     placed_ships += 1
                     #checks collision with other ships
-                    for y in range(len(ships)):
-                        if y != i and any(j in ships[i].positions for j in ships[y].positions):
+                    for j in range(len(ships)):
+                        if j != i and any(pos in ships[i].positions for pos in ships[j].positions):
                             ships[i].reset() 
                             placed_ships -= 1
                             break    
@@ -133,7 +134,7 @@ class FleetBattle:
         enemy_attacks = []   #list of positions attacked by enemy
         player_hits = 0
         enemy_hits = 0
-        enemy_attack_probabilities = AttackProbabilityMatrix(parameters.N, parameters.N)
+        enemy_attack_probabilities = AttackProbabilityMatrix(parameters.N[0], parameters.N[1])
         #main game loop
         while self.phase > 0:
             self.graphics.clear_screen()
@@ -160,7 +161,7 @@ class FleetBattle:
                     else:
                         #handles an attack by the player
                         attack_pos = self.graphics.get_attack_position()
-                        if attack_pos >= 0 and attack_pos not in player_attacks:
+                        if len(attack_pos) > 0 and attack_pos not in player_attacks:
                             player_attacks.append(attack_pos)
                             if attack_pos in self.enemy_positions:
                                 player_hits += 1 #enemy ship hit by player
