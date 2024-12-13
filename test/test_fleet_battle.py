@@ -19,14 +19,16 @@ def test_game():
 def test_place_ships_player(test_game):
     test_game.place_ships_randomly()
     for pos in test_game.player_positions:
-        assert 0 <= pos < parameters.N * parameters.N
+        assert 0 <= pos[0] < parameters.N[0]
+        assert 0 <= pos[1] < parameters.N[1]
     for ship in test_game.ships:
         assert set(ship.positions).issubset(set(test_game.player_positions))
     
 def test_place_ships_enemy(test_game):
     test_game.place_ships_randomly(False)
     for pos in test_game.enemy_positions:
-        assert 0 <= pos < parameters.N * parameters.N
+        assert 0 <= pos[0] < parameters.N[0]
+        assert 0 <= pos[1] < parameters.N[1]
     for ship in test_game.ships_enemy:
         assert set(ship.positions).issubset(set(test_game.enemy_positions))
     
@@ -37,6 +39,6 @@ def test_place_ships_quit(test_game):
     assert len(test_game.player_positions) == 0
     assert len(test_game.enemy_positions) == 0
     for ship in test_game.ships:
-        assert set(ship.positions).issubset({-1})
+        assert set(ship.positions).issubset({None})
     for ship in test_game.ships_enemy:
-        assert set(ship.positions).issubset({-1})
+        assert set(ship.positions).issubset({None})
